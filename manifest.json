@@ -2,7 +2,7 @@
   "name": "Checkpoint Attendance",
   "short_name": "Checkpoint",
   "description": "QR checkpoint attendance with GPS-verified scans.",
-  "start_url": "./attendance-app.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
