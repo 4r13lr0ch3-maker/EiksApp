@@ -1005,5 +1005,76 @@ renderPhaseCards();
 renderSettingsRooms();
 renderMemberList();
 </script>
+
+<!-- ==================== PASTE FIREBASE CODE BELOW THIS LINE ==================== -->
+<script type="module">
+  // 1. Load Firebase modules over the web
+  import { initializeApp } from "https://gstatic.com";
+  import { getFirestore, doc, setDoc } from "https://gstatic.com";
+
+  // 2. Your project connection credentials
+  const firebaseConfig = {
+    apiKey: "AIzaSyBeMjDv-LZ9YtHDwO3VnXHk-lZdS809CH8",
+    authDomain: "://firebaseapp.com",
+    projectId: "checkpoint-app-83202",
+    storageBucket: "checkpoint-app-83202.firebasestorage.app",
+    messagingSenderId: "1071332183810",
+    appId: "1:1071332183810:web:2041ddc6543b9aa9807c1b",
+    measurementId: "G-JHQZ99V5MW"
+  };
+
+  // 3. Initialize Firebase services
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // 4. Form integration handler
+  document.addEventListener("DOMContentLoaded", () => {
+    // Locate the fields inside your HTML (Update these selectors if you have specific IDs)
+    const nameInput = document.querySelector('input[placeholder*="Full name"]') || document.querySelector('input[type="text"]');
+    const idInput = document.querySelector('input[placeholder*="Employee ID"]') || document.querySelectorAll('input[type="text"]');
+    const roleInput = document.querySelector('input[placeholder*="Role"]') || document.querySelectorAll('input[type="text"]');
+    
+    // Find the specific button that text reads "Save account details"
+    const saveButton = Array.from(document.querySelectorAll('button')).find(btn => btn.textContent.trim() === 'Save account details');
+
+    if (saveButton) {
+      saveButton.addEventListener('click', async (e) => {
+        e.preventDefault(); 
+
+        const empId = idInput ? idInput.value.trim() : "";
+        const fullName = nameInput ? nameInput.value.trim() : "";
+        const role = roleInput ? roleInput.value.trim() : "";
+
+        if (!empId) {
+          alert("Please fill in your Employee ID to synchronize.");
+          return;
+        }
+
+        try {
+          saveButton.disabled = true;
+          saveButton.textContent = "Saving to cloud...";
+
+          // Save profile records to your global "users" collection inside Firestore
+          await setDoc(doc(db, "users", empId), {
+            fullName: fullName,
+            role: role,
+            employeeId: empId,
+            lastSynced: new Date()
+          });
+
+          alert("Success! Account profile details synchronized with Cloud Firebase.");
+        } catch (error) {
+          console.error("Cloud write failed:", error);
+          alert("Synchronization error: " + error.message);
+        } finally {
+          saveButton.disabled = false;
+          saveButton.textContent = "Save account details";
+        }
+      });
+    }
+  });
+</script>
+<!-- ==================== END OF FIREBASE CODE ==================== -->
+
 </body>
 </html>
